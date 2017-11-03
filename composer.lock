@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "812b518791292e7bd838e336ec15c47a",
+    "content-hash": "551c08c5753f7daeb47b8110f0586e32",
     "packages": [
         {
             "name": "2amigos/yii2-ckeditor-widget",
@@ -327,44 +327,6 @@
             "time": "2017-09-13 13:08:14"
         },
         {
-            "name": "components/flag-icon-css",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/lipis/flag-icon-css.git",
-                "reference": "fe79c175032e6f13f0eb6321a1b5dcdd7709fa92"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/lipis/flag-icon-css/zipball/fe79c175032e6f13f0eb6321a1b5dcdd7709fa92",
-                "reference": "fe79c175032e6f13f0eb6321a1b5dcdd7709fa92",
-                "shasum": ""
-            },
-            "type": "component",
-            "extra": {
-                "component": {
-                    "name": "flag-icon-css",
-                    "files": [
-                        "less/**",
-                        "css/**",
-                        "flags/**"
-                    ]
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Panayiotis Lipiridis (Lipis)",
-                    "email": "lipiridis@gmail.com"
-                }
-            ],
-            "description": "CSS for vector based country flags",
-            "time": "2017-10-14 10:27:22"
-        },
-        {
             "name": "ezyang/htmlpurifier",
             "version": "v4.9.3",
             "source": {
@@ -465,12 +427,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/bootstrap-fileinput.git",
-                "reference": "f7a3e4435413c4880e7009340af4e96e30081841"
+                "reference": "f846c39116980192719d73707363bfc7fc4617ad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/bootstrap-fileinput/zipball/f7a3e4435413c4880e7009340af4e96e30081841",
-                "reference": "f7a3e4435413c4880e7009340af4e96e30081841",
+                "url": "https://api.github.com/repos/kartik-v/bootstrap-fileinput/zipball/f846c39116980192719d73707363bfc7fc4617ad",
+                "reference": "f846c39116980192719d73707363bfc7fc4617ad",
                 "shasum": ""
             },
             "type": "library",
@@ -510,55 +472,7 @@
                 "progress",
                 "upload"
             ],
-            "time": "2017-10-29 06:05:59"
-        },
-        {
-            "name": "kartik-v/yii2-icons",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/kartik-v/yii2-icons.git",
-                "reference": "70996442500c143966f4ef83d1e9a49dd3665cc1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/yii2-icons/zipball/70996442500c143966f4ef83d1e9a49dd3665cc1",
-                "reference": "70996442500c143966f4ef83d1e9a49dd3665cc1",
-                "shasum": ""
-            },
-            "require": {
-                "components/flag-icon-css": "*",
-                "fortawesome/font-awesome": "*",
-                "kartik-v/yii2-krajee-base": "*",
-                "yiisoft/yii2-jui": "*"
-            },
-            "type": "yii2-extension",
-            "autoload": {
-                "psr-4": {
-                    "kartik\\icons\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD 3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Kartik Visweswaran",
-                    "email": "kartikv2@gmail.com",
-                    "homepage": "http://demos.krajee.com/"
-                }
-            ],
-            "description": "Set of icon frameworks for use in Yii Framework 2.0",
-            "homepage": "https://github.com/kartik-v/yii2-icons",
-            "keywords": [
-                "extension",
-                "font",
-                "icon",
-                "yii",
-                "yii2"
-            ],
-            "time": "2017-02-24 18:03:31"
+            "time": "2017-11-03 05:36:06"
         },
         {
             "name": "kartik-v/yii2-krajee-base",
@@ -822,59 +736,17 @@
             "time": "2017-08-29 20:43:58"
         },
         {
-            "name": "understeam/yii2-calendar-widget",
-            "version": "v0.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Understeam/yii2-calendar-widget.git",
-                "reference": "88af7944f20e5c81db2f6095af295787554569ac"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Understeam/yii2-calendar-widget/zipball/88af7944f20e5c81db2f6095af295787554569ac",
-                "reference": "88af7944f20e5c81db2f6095af295787554569ac",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.6.5",
-                "yiisoft/yii2": "^2.0",
-                "yiisoft/yii2-bootstrap": "^2.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^5.4"
-            },
-            "type": "extension",
-            "autoload": {
-                "psr-4": {
-                    "understeam\\calendar\\": "src",
-                    "understeam\\unit\\calendar\\": "tests/unit"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "proprietary"
-            ],
-            "authors": [
-                {
-                    "name": "Anatoly Rugalev",
-                    "email": "anatoly.rugalev@gmail.com"
-                }
-            ],
-            "description": "Yii2 calendar widget",
-            "time": "2016-07-26T23:03:05+00:00"
-        },
-        {
             "name": "yiisoft/yii2",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-framework.git",
-                "reference": "5f3aee0d403549b6e94308e6cb3f828434e77072"
+                "reference": "67c066486097dda72b77f96c4193808fc9059625"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/5f3aee0d403549b6e94308e6cb3f828434e77072",
-                "reference": "5f3aee0d403549b6e94308e6cb3f828434e77072",
+                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/67c066486097dda72b77f96c4193808fc9059625",
+                "reference": "67c066486097dda72b77f96c4193808fc9059625",
                 "shasum": ""
             },
             "require": {
@@ -961,7 +833,7 @@
                 "framework",
                 "yii2"
             ],
-            "time": "2017-11-01 20:47:13"
+            "time": "2017-11-03 00:11:09"
         },
         {
             "name": "yiisoft/yii2-bootstrap",
@@ -3821,7 +3693,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "kartik-v/yii2-icons": 20,
         "kartik-v/yii2-widget-fileinput": 20
     },
     "prefer-stable": false,
