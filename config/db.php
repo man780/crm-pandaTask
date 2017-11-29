@@ -2,9 +2,9 @@
 
 return [
     'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=localhost;dbname=panda-task-db',
-    'username' => 'panda-task-user',
-    'password' => 'e8w43e53nem98E78',
+    'dsn' => 'mysql:host=localhost;dbname=panda_task',
+    'username' => 'root',
+    'password' => '',
     'charset' => 'utf8',
 
     // Schema cache options (for production environment)
