@@ -30,6 +30,7 @@ class m171016_142918_create_task_table extends Migration
             'shown_by_executor' => $this->integer(),
 			'time' => $this->integer(),
 			'status' => $this->integer(),
+			'bycreated' => $this->integer(),
         ]);
     }
 

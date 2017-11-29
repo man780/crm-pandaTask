@@ -19,6 +19,7 @@ class m171017_093429_create_junction_table_for_task_and_user_tables extends Migr
         $this->createTable('task_user', [
             'task_id' => $this->integer()->notNull(),
             'user_id' => $this->integer()->notNull(),
+            'shown_time' => $this->dateTime(),
             'created_at' => $this->dateTime(),
             'PRIMARY KEY(task_id, user_id)',
         ]);
