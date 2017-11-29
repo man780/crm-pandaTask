@@ -58,7 +58,7 @@ class Comment extends \yii\db\ActiveRecord
             'task_id' => Yii::t('app', 'Task ID'),
             'parent_id' => Yii::t('app', 'Parent ID'),
             'title' => Yii::t('app', 'Title'),
-            'body' => Yii::t('app', 'Body'),
+            'body' => Yii::t('app', 'CommentBody'),
             'status' => Yii::t('app', 'Status'),
             'dcreated' => Yii::t('app', 'Dcreated'),
         ];
@@ -94,5 +94,32 @@ class Comment extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+
+    public function makeSeen($task_id){
+        if(Yii::$app->user->identity->role == 1){
+            $comments = Comment::find()->where(['status' => 1, 'task_id' => $task_id])->
+                andWhere(['<>', 'user_id', Yii::$app->user->id])->all();
+            foreach ($comments as $comment){
+                $comment->status = 2;
+                if(!$comment->save()){
+                    vd($comment->errors);
+                }
+            }
+        }else{
+            $user = \Yii::$app->user->identity;
+            foreach ($user->tasks as $task){
+                $idArr[] = $task->id;
+            }
+            $comments = Comment::find()->where(['status' => 1])->
+                andWhere(['IN', 'task_id', $idArr])->
+                andWhere(['<>', 'user_id', Yii::$app->user->id])->all();
+            foreach ($comments as $comment){
+                $comment->status = 2;
+                if(!$comment->save()){
+                    vd($comment->errors);
+                }
+            }
+        }
     }
 }

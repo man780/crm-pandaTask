@@ -94,6 +94,24 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             'updated_at' => Yii::t('app', 'Updated At'),
         ];
     }
+
+    public function updateUser()
+    {
+        //vd($this);
+        $profile = ($profile = User::findOne(Yii::$app->user->id)) ? $profile : new User();
+        $profile->name = $this->name;
+        $profile->birthday = $this->birthday;
+        $profile->branch_id = $this->branch_id;
+        $profile->skype = $this->skype;
+        $profile->phone = $this->phone;
+        $profile->telegramm = $this->telegramm;
+        $profile->avatar = $this->avatar;
+        //var_dump($profile->attributes); die;
+        return $profile->save();
+
+
+
+    }
     
 	/* ����� */
 	/**
@@ -120,6 +138,22 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         return $this->hasMany(Task::className(), ['id' => 'task_id'])->
         orderBy(['id' => SORT_DESC])->viaTable('task_user', ['user_id' => 'id']);
     }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    /*public function getTaskUsers()
+    {
+        return $this->hasMany(TaskUser::className(), ['user_id' => 'id']);
+    }*/
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    /*public function getTasks()
+    {
+        return $this->hasMany(Task::className(), ['id' => 'task_id'])->
+            orderBy(['id' => SORT_DESC])->viaTable('task_user', ['user_id' => 'id']);
+    }*/
 
     /**
      * @return \yii\db\ActiveQuery

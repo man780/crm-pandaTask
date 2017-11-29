@@ -41,7 +41,29 @@ class Task extends \yii\db\ActiveRecord
     private $_priorities = [1=>'низкий', 2=>'средний', 3=>'высокий'];
     private $_copywriter_type = [1=>'статья для блога', 2=>' статья для преленда', 3=>'заголовки', 4 => 'комментарии'];
     private $_copywriter_theme = [1=>'адалт', 2=>' красота и здоровье', 3=>'медицина', 4 => 'бизнес и финансы', 5 => 'гороскопы и эзотерика'];
-    private $_status = [-1=>'Отказ', 0=>'на рассмотрение', 1=>'в процессе', 5=>'на проверке',  15 => 'готовый'];
+    //private $_status = [-1=>'Отказ', 0=>'на рассмотрение', 1=>'в процессе', 5=>'на проверке',  15 => 'готовый'];
+    private $_statuses = [
+        0 => [
+            'color' => '#d9534f',
+            'name' => 'Задача поставлена',
+        ],
+        1 => [
+            'color' => '#f0ad4e',
+            'name' => 'В процессе выполнения',
+        ],
+        3 => [
+            'color' => '#337ab7',
+            'name' => 'Требует внимания',
+        ],
+        5 => [
+            'color' => '#5bc0de',
+            'name' => 'На проверке',
+        ],
+        15 => [
+            'color' => '#5cb85c',
+            'name' => 'Выполнено',
+        ],
+    ];
 
     /**
      * @inheritdoc
@@ -107,6 +129,15 @@ class Task extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getShownTasks()
+    {
+        return $this->hasMany(ShownTask::className(), ['task_id' => 'id']);
+    }
+
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getTaskCreator()
     {
         return $this->hasOne(User::className(), ['id' => 'bycreated']);
@@ -118,6 +149,14 @@ class Task extends \yii\db\ActiveRecord
     public function getExecutions()
     {
         return $this->hasMany(Execution::className(), ['task_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getComments()
+    {
+        return $this->hasMany(Comment::className(), ['task_id' => 'id']);
     }
 
     /**
@@ -201,8 +240,32 @@ class Task extends \yii\db\ActiveRecord
 
     public function getStatus($item = null){
         if(is_numeric($item)){
-            return $this->_status[$item];
+            return $this->_statuses[$item]['name'];
         }
-        return $this->_status;
+        $statusArr = [];
+        foreach ($this->_statuses as $key => $status){
+            $statusArr[$key] = $status;
+        }
+        return $statusArr;
+    }
+
+    public function getStatusColor($item = null){
+        if(is_numeric($item)){
+            return $this->_statuses[$item]['color'];
+        }
+        return false;
+    }
+
+    public function getStatuses(){
+        return $this->_statuses;
+    }
+
+    public function getShownByUser($task_id)
+    {
+        $user_id = Yii::$app->user->id;
+        if(count(TaskUser::findAll(['user_id' => $user_id, 'task_id' => $task_id]))){
+            return true;
+        }
+        return false;
     }
 }

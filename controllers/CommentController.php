@@ -24,6 +24,7 @@ class CommentController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                    'add' => ['POST'],
                 ],
             ],
         ];
@@ -73,6 +74,39 @@ class CommentController extends Controller
             'model' => $model,
         ]);
     }
+
+    /**
+     * Creates a new Comment model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function actionAdd($task_id)
+    {
+        $model = new Comment();
+        if ($model->load(Yii::$app->request->post())) {
+            $model->task_id = $task_id;
+            $model->user_id = Yii::$app->user->id;
+            $model->dcreated = time();
+            $model->status = 1;
+            if($model->save()){
+                if($model->task->to == 1){
+                    $str = '-copy';
+                }elseif ($model->task->to == 2){
+                    $str = '-translator';
+                }elseif($model->task->to == 3) {
+                    $str = '-developer';
+                }
+                return $this->redirect(['/task/view'.$str, 'id' => $model->task_id]);
+            }
+
+        }
+
+        return $this->render('create', [
+            'model' => $model,
+        ]);
+    }
+
+
 
     /**
      * Updates an existing Comment model.

@@ -22,6 +22,16 @@ $script = <<< JS
         if($('.executor').length > 1)
         $('.executor:last').remove();
     });
+    $('.add-language').click(function(){
+        var executor = $('.language:last').clone();
+        num = $('.language').length;
+        executor.find('.languageAuthorities').attr('id', 'w'+num);
+        $('.language-list').append(executor);
+    });
+    $('.remove-language').click(function(){
+        if($('.language').length > 1)
+        $('.language:last').remove();
+    });
 JS;
 $this->registerJs($script);
 ?>
@@ -78,6 +88,34 @@ $this->registerJs($script);
         </div>
     </div>
 
+    <div class="form-group">
+        <div class="container  language-list">
+            <?if(!$model->isNewRecord):?>
+                <?foreach ($languages as $executor):?>
+                    <div class="row language">
+                        <?=Html::label('Языки', 'language')?>
+                        <?
+                        $items = $model->getExecutorsByRole(1);
+                        echo Html::dropDownList('language[]', $language['language_authority_id'], $items, ['class'=>'form-control']);
+                        ?>
+                    </div>
+                <?endforeach;?>
+            <?else:?>
+                <div class="row language">
+                    <?=Html::label('Языки', 'language')?>
+                    <?
+                    //$items = \yii\helpers\ArrayHelper::map($model->getLanguages(), 'id', ['language']);
+                    echo Html::dropDownList('language[]', '', $languages, ['class'=>'form-control', 'prompt'=>'Выберите язык ...']);
+                    ?>
+                </div>
+            <?endif;?>
+        </div>
+        <div class="container row">
+            <a href="javascript:void(0);" class="btn btn-success add-language">+</a>
+            <a href="javascript:void(0);" class="btn btn-danger remove-language">-</a>
+        </div>
+    </div>
+
     <div class='form-group'>
         <label>Выберите файлы (Можно любые файлы и несколько файлов)</label>
         <?
@@ -90,7 +128,7 @@ $this->registerJs($script);
         ?>
     </div>
 
-    <?= $form->field($model, 'to_translator_languages')->textInput(['maxlength' => true]) ?>
+    <?//= $form->field($model, 'to_translator_languages')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Add'), ['class' => 'btn btn-success']) ?>

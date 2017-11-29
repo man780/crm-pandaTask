@@ -41,6 +41,7 @@ class MainController extends BehaviorsController
 
     public function actionIndex()
     {
+
         //$role = Yii::$app->user->identity->role;
         $searchModel = new TaskSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);

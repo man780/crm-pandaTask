@@ -20,7 +20,7 @@ class SiteAsset extends AssetBundle
     public $css = [
         //'css/AdminLTE.min.js',
         //'css/login.css?3',
-        'css/site.css',
+        'css/site.css?9',
     ];
     public $js = [
         //'js/login.js'

@@ -2,9 +2,15 @@
 
 namespace app\controllers;
 
+use app\models\Comment;
+use app\models\Language;
+use app\models\ShownTask;
+use app\models\TaskLanguage;
+use app\models\User;
 use Yii;
 use app\models\Task;
 use app\models\TaskSearch;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -59,34 +65,92 @@ class TaskController extends Controller
         ]);
     }
 
-    /**
-     * Displays a single Task model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+
+
+    public function actionDone(){
+        $role = Yii::$app->user->identity->role;
+        if($role == 1){
+            $tasks = Task::find()->where(['status' => 15])->orderBy('id DESC')->all();
+        }else{
+            $userModel = Yii::$app->user->identity;
+            //$tasks = Task::find()->where(['status' => 15])->orderBy('id DESC')->all();
+            $tasks = Task::find()
+                ->joinWith('taskUsers')
+                ->where(['=', 'task_user.user_id', Yii::$app->user->id])
+                ->andWhere(['=', 'task.status', 15])
+                ->all();
+            //$tasks = $userModel->tasks;
+        }
+        $this->view->title = 'Выполненные';
+        return $this->render(
+            '/site/index',
+            [
+                'tasks' => $tasks,
+            ]);
     }
 
-    /**
-     * Creates a new Task model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new Task();
+    public function actionInOrder(){
+        $role = Yii::$app->user->identity->role;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if($role == 1){
+            $tasks = Task::find()->where(['status' => 0])->orderBy('id DESC')->all();
+        }else{
+            /*$userModel = Yii::$app->user->identity;
+            $tasks = $userModel->tasks;*/
+            $tasks = Task::find()
+                ->joinWith('taskUsers')
+                ->where(['=', 'task_user.user_id', Yii::$app->user->id])
+                ->andWhere(['=', 'task.status', 0])
+                ->all();
         }
+        $this->view->title = 'Задача поставлена';
+        return $this->render(
+            '/site/index',
+            [
+                'tasks' => $tasks,
+            ]);
+    }
 
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+    public function actionActive(){
+        $role = Yii::$app->user->identity->role;
+        if($role == 1){
+            $tasks = Task::find()->where(['status' => 1])->orderBy('id DESC')->all();
+        }else{
+            $tasks = Task::find()
+                ->joinWith('taskUsers')
+                ->where(['=', 'task_user.user_id', Yii::$app->user->id])
+                ->andWhere(['=', 'task.status', 1])
+                ->all();
+            /*$userModel = Yii::$app->user->identity;
+            $tasks = $userModel->tasks;*/
+        }
+        $this->view->title = 'В процессе выполнения';
+        return $this->render(
+            '/site/index',
+            [
+                'tasks' => $tasks,
+            ]);
+    }
+
+    public function actionChecking(){
+        $role = Yii::$app->user->identity->role;
+        if($role == 1){
+            $tasks = Task::find()->where(['status' => 5])->orderBy('id DESC')->all();
+        }else{
+            $tasks = Task::find()
+                ->joinWith('taskUsers')
+                ->where(['=', 'task_user.user_id', Yii::$app->user->id])
+                ->andWhere(['=', 'task.status', 5])
+                ->all();
+            /*$userModel = Yii::$app->user->identity;
+            $tasks = $userModel->tasks;*/
+        }
+        $this->view->title = 'На проверке';
+        return $this->render(
+            '/site/index',
+            [
+                'tasks' => $tasks,
+            ]);
     }
 
     /**
@@ -97,9 +161,17 @@ class TaskController extends Controller
     public function actionViewCopy($id)
     {
         $model = $this->findModel($id);
-        if(is_null($model->shown_by_executor)){
-            $model->shown_by_executor = 1;
-            $model->save();
+        $comment = new Comment();
+        $comment->makeSeen($id);
+        $user_id = Yii::$app->user->id;
+        $task_user = TaskUser::findOne(['user_id' => $user_id, 'task_id' => $id]);
+        if(!is_null($task_user) && is_null($task_user->shown_time)){
+            $task_user->shown_time= date('Y-m-d H:i:s');
+            $model->status = 1;
+            if(!($task_user->save() && $model->save())){
+                vd($task_user->errors, false);
+                vd($model->errors);
+            }
         }
         return $this->render('view-copy', [
             'model' => $model,
@@ -114,10 +186,15 @@ class TaskController extends Controller
     public function actionViewDeveloper($id)
     {
         $model = $this->findModel($id);
-        if(is_null($model->shown_by_executor)){
-            $model->shown_by_executor = 1;
+        $comment = new Comment();
+        $comment->makeSeen($id);
+        $user_id = Yii::$app->user->id;
+        $task_user = TaskUser::findOne(['user_id' => $user_id, 'task_id' => $id]);
+        if(!is_null($task_user) && is_null($task_user->shown_time)){
+            $task_user->shown_time= date('Y-m-d H:i:s');
             $model->status = 1;
-            if(!$model->save()){
+            if(!($task_user->save() && $model->save())){
+                vd($task_user->errors, false);
                 vd($model->errors);
             }
         }
@@ -134,9 +211,17 @@ class TaskController extends Controller
     public function actionViewTranslator($id)
     {
         $model = $this->findModel($id);
-        if(is_null($model->shown_by_executor)){
-            $model->shown_by_executor = 1;
-            $model->save();
+        $comment = new Comment();
+        $comment->makeSeen($id);
+        $user_id = Yii::$app->user->id;
+        $task_user = TaskUser::findOne(['user_id' => $user_id, 'task_id' => $id]);
+        if(!is_null($task_user) && is_null($task_user->shown_time)){
+            $task_user->shown_time= date('Y-m-d H:i:s');
+            $model->status = 1;
+            if(!($task_user->save() && $model->save())){
+                vd($task_user->errors, false);
+                vd($model->errors);
+            }
         }
         return $this->render('view-translator', [
             'model' => $model,
@@ -159,7 +244,7 @@ class TaskController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             $post = Yii::$app->request->post();
             $model->to = 1;
-            $this->status = 0;
+            //$this->status = 0;
             $model->deadline = strtotime($post['Task']['deadline']);
             if($model->save()){
                 foreach ($post['executor'] as $key => $pExec){
@@ -168,18 +253,17 @@ class TaskController extends Controller
                     $eventExec->user_id = $pExec;
                     $eventExec->task_id = $model->id;
                     $eventExec->created_at = date('Y-m-d H:i:s');
-                    //var_dump($eventExec->attributes);
                     $eventExec->save();
                 }
                 $files = $_FILES['file'];
                 if(is_array($files))
                     foreach ($files['tmp_name'] as $key => $file):
                         if(is_file($file)){
-                            $filePlace = Yii::$app->basePath.'\web\files\task'.DIRECTORY_SEPARATOR.$model->id;
+                            $filePlace = Yii::$app->basePath.'/web/files/task/'.$model->id;
 
                             if(!is_dir($filePlace))mkdir($filePlace);
 
-                            if (!move_uploaded_file($file, Yii::$app->basePath.'\web\files\task\\'.$model->id.DIRECTORY_SEPARATOR.$files['name'][$key])){
+                            if (!move_uploaded_file($file, Yii::$app->basePath.'/web/files/task/'.$model->id.'/'.$files['name'][$key])){
                                 Yii::$app->session->setFlash('success', 'Файл не сохранён');
                             }
 
@@ -205,26 +289,31 @@ class TaskController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             $post = Yii::$app->request->post();
             $model->to = 2;
-            $this->status = 0;
+            //$model->status = 0;
             $model->deadline = strtotime($post['Task']['deadline']);
             if($model->save()){
                 foreach ($post['executor'] as $key => $pExec){
                     $eventExec = new TaskUser();
-
                     $eventExec->user_id = $pExec;
                     $eventExec->task_id = $model->id;
                     $eventExec->created_at = date('Y-m-d H:i:s');
                     $eventExec->save();
                 }
+                foreach ($post['language'] as $key => $language){
+                    $taskLang = new TaskLanguage();
+                    $taskLang->language_id = $language;
+                    $taskLang->task_id = $model->id;
+                    $taskLang->save();
+                }
                 $files = $_FILES['file'];
                 if(is_array($files))
                     foreach ($files['tmp_name'] as $key => $file):
                         if(is_file($file)){
-                            $filePlace = Yii::$app->basePath.'\web\files\task'.DIRECTORY_SEPARATOR.$model->id;
+                            $filePlace = Yii::$app->basePath.'/web/files/task/'.$model->id;
 
                             if(!is_dir($filePlace))mkdir($filePlace);
 
-                            if (!move_uploaded_file($file, Yii::$app->basePath.'\web\files\task\\'.$model->id.DIRECTORY_SEPARATOR.$files['name'][$key])){
+                            if (!move_uploaded_file($file, Yii::$app->basePath.'/web/files/task/'.$model->id.'/'.$files['name'][$key])){
                                 Yii::$app->session->setFlash('success', 'Файл не сохранён');
                             }
 
@@ -235,8 +324,10 @@ class TaskController extends Controller
 
         }
 
+        $languages = ArrayHelper::map(Language::find()->all(), 'id', 'language');
         return $this->render('create-task-translator', [
             'model' => $model,
+            'languages' => $languages,
         ]);
     }
 
@@ -250,7 +341,7 @@ class TaskController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             $post = Yii::$app->request->post();
             $model->to = 3;
-            $this->status = 0;
+            //$this->status = 0;
             $model->deadline = strtotime($post['Task']['deadline']);
 
             //var_dump($files);die;
@@ -267,11 +358,11 @@ class TaskController extends Controller
                 if(is_array($files))
                     foreach ($files['tmp_name'] as $key => $file):
                         if(is_file($file)){
-                            $filePlace = Yii::$app->basePath.'\web\files\task'.DIRECTORY_SEPARATOR.$model->id;
+                            $filePlace = Yii::$app->basePath.'/web/files/task/'.$model->id;
 
                             if(!is_dir($filePlace))mkdir($filePlace);
 
-                            if (!move_uploaded_file($file, Yii::$app->basePath.'\web\files\task\\'.$model->id.DIRECTORY_SEPARATOR.$files['name'][$key])){
+                            if (!move_uploaded_file($file, Yii::$app->basePath.'/web/files/task/'.$model->id.'/'.$files['name'][$key])){
                                 Yii::$app->session->setFlash('success', 'Файл не сохранён');
                             }
 
@@ -305,6 +396,7 @@ class TaskController extends Controller
         ]);
     }
 
+
     /**
      * Deletes an existing Task model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
@@ -314,13 +406,9 @@ class TaskController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
-    }
-
-    public function actionDone(){
-        $id = Yii::$app->user->id;
-        $tasks = Task::find()->where(['user_id' => $id])->all();
+        /*$model->status = -1;
+        $model->save();*/
+        return $this->redirect(['/']);
     }
 
     /**

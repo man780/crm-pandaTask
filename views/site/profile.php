@@ -14,25 +14,14 @@ use app\models\Branch;
 <div class="main-profile">
 
     <?php $form = ActiveForm::begin(); ?>
-    <?php
-    if($model->user)
-        echo $form->field($model->user, 'username');
-    ?>
-    <?= $form->field($model, 'first_name') ?>
-    <?= $form->field($model, 'second_name') ?>
-    <?= $form->field($model, 'middle_name') ?>
+    <?//= $form->field($model, 'email') ?>
+    <?= $form->field($model, 'name') ?>
 
     <?= $form->field($model, 'birthday')->widget(DatePicker::classname(), [
         'language' => 'ru',
         'dateFormat' => 'dd.MM.yyyy',
     ]) ?>
 
-    <?
-    $params = [
-        'prompt' => 'Выберите пол'
-    ];
-    echo $form->field($model, 'gender')->dropDownList([1=>'Муж', 0=>'Жен'], ['class'=>'form-control', $params]);
-    ?>
 
     <?
     $params = [

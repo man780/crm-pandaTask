@@ -19,10 +19,18 @@ use yii\helpers\Url;
  * @var $this \yii\web\View */
 LoginAsset::register($this);
 $this->beginPage();
+$script = <<< JS
+        
+    $('input').each(function(){
+        $(this).focus();
+    });
+JS;
+$this->registerJs($script);
 ?>
     <!DOCTYPE html>
     <html lang="<?= Yii::$app->language ?>">
     <head>
+        <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
         <?= Html::csrfMetaTags() ?>
         <meta charset="<?= Yii::$app->charset ?>">
         <?php $this->registerMetaTag(['name' => 'viewport', 'content' => 'width=device-width, initial-scale=1']); ?>
@@ -34,7 +42,6 @@ $this->beginPage();
 
     <hgroup>
         <h1>Panda Task</h1>
-        <h3>By Murod</h3>
     </hgroup>
 
     <div class="wrap">
@@ -48,7 +55,7 @@ $this->beginPage();
     <footer class="footer">
         <div class="container">
             <span class="badge">
-                <span class="glyphicon glyphicon-copyright-mark"></span> Panda  <?= date('Y') ?>
+                <span class="glyphicon glyphicon-copyright-mark"></span> <span>Panda  <?= date('Y') ?></span>
             </span>
         </div>
     </footer>

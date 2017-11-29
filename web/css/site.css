@@ -1,3 +1,67 @@
+@font-face {
+    font-family: 'YourFontName'; /*a name to be used later*/
+    src: url('/fonts/Roboto_Regular.ttf'); /*URL to font*/
+}
+
+.top-navigation{
+    /*width: ;*/
+}
+.navigation-list{
+    float: right;
+}
+.navigation-item a{
+    text-decoration: none;
+    cursor: pointer;
+}
+.navigation-list li{
+    list-style: none;
+    float: left;
+    padding: 15px 15px;
+    font-size: 18px;
+    line-height: 50px;
+}
+.nav-logo{
+    float: left;
+    padding: 15px 15px;
+    font-size: 18px;
+    line-height: 50px;
+}
+.nickname{
+
+}
+.dropdown-menu .divider{
+    height: 1px;
+    margin: 9px 0;
+    overflow: hidden;
+    background-color: #e5e5e5;
+}
+.dropdown-menu li{
+    padding: 3px 3px;
+}
+.button-add-task{
+    border: none;
+    background: #fff;
+    color: #999;
+}
+.button-add-task img{
+    margin-right: 30px;
+}
+.modal-add-task{
+    list-style: none;
+}
+.modal-add-task li{
+    padding: 8px 2px;
+}
+.modal-add-task a{
+    font-weight: bold;
+    color: #555;
+    text-decoration: none;
+}
+.modal-add-task img{
+    width: 30px;
+    padding-right: 10px;
+}
+
 html,
 body {
     height: 100%;
@@ -11,7 +75,7 @@ body {
 }
 
 .wrap > .container {
-    padding: 70px 15px 20px;
+    /*padding: 70px 15px 20px;*/
 }
 
 .footer {
@@ -170,4 +234,69 @@ a.desc:after {
     color: #939393;
     text-decoration: none;
     font: 13.3333px Arial;
+}
+.btn-link:hover{
+    color: #939393;
+    text-decoration: none;
+    font: 13.3333px Arial;
+}
+
+
+.top-navigation{
+    /*width: ;*/
+}
+.navigation-list{
+    float: right;
+}
+.navigation-item a{
+    text-decoration: none;
+    cursor: pointer;
+}
+.navigation-list li{
+    list-style: none;
+    float: left;
+    padding: 15px 15px;
+    font-size: 18px;
+    line-height: 50px;
+}
+.nav-logo{
+    float: left;
+    padding: 15px 15px;
+    font-size: 18px;
+    line-height: 50px;
+}
+.nickname{
+
+}
+.dropdown-menu .divider{
+    height: 1px;
+    margin: 9px 0;
+    overflow: hidden;
+    background-color: #e5e5e5;
+}
+.dropdown-menu li{
+    padding: 3px 3px;
+}
+.button-add-task{
+    border: none;
+    background: #fff;
+    color: #999;
+}
+.button-add-task img{
+    margin-right: 30px;
+}
+.modal-add-task{
+    list-style: none;
+}
+.modal-add-task li{
+    padding: 8px 2px;
+}
+.modal-add-task a{
+    font-weight: bold;
+    color: #555;
+    text-decoration: none;
+}
+.modal-add-task img{
+    width: 30px;
+    padding-right: 10px;
 }

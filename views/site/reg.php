@@ -16,7 +16,7 @@ use app\models\Branch;
 
     <div class="group">
         <?= $form->field($model, 'role', ['template' => '{input}<span class="highlight"></span><span class="bar"></span>
-        {label}<div class="help-block">{hint}</div>'])->dropDownList([1=>'Создатель', 2=>'Испонитель'], ['prompt' => 'Выберите роль...']) ?>
+        <div class="help-block">{hint}</div>'])->dropDownList([1=>'Создатель', 2=>'Испонитель'], ['prompt' => 'Выберите роль...']) ?>
     </div>
     <div class="group">
         <?= $form->field($model, 'email', ['template' => '{input}<span class="highlight"></span><span class="bar"></span>
@@ -39,7 +39,7 @@ use app\models\Branch;
         'prompt' => 'Выберите отдел...'
     ];?>
         <?= $form->field($model, 'branch_id', ['template' => '{input}<span class="highlight"></span><span class="bar"></span>
-        {label}<div class="help-block">{hint}</div>'])->dropDownList(ArrayHelper::map(Branch::find()->all(), 'id', 'title'), $params) ?>
+        <div class="help-block">{hint}</div>'])->dropDownList(ArrayHelper::map(Branch::find()->all(), 'id', 'title'), $params) ?>
     </div>
 	<div class="group">
         <?= $form->field($model, 'birthday', ['template' => '{input}<span class="highlight"></span><span class="bar"></span>
@@ -51,7 +51,7 @@ use app\models\Branch;
 	
 	<div class="group">    
         <?= $form->field($model, 'avatar', ['template' => '{input}<span class="highlight"></span><span class="bar"></span>
-        {label}<div class="help-block">{hint}</div>'])->fileInput()/*->widget(FileInput::classname(), [
+        <div class="help-block">{hint}</div>'])->fileInput()/*->widget(FileInput::classname(), [
 			'attribute' => 'avatar',
 		])*/ ?>
     </div>

@@ -51,6 +51,7 @@ class RegForm extends Model
 		return [
             //'username' => Yii::t('app', 'Username'),
             'email' => Yii::t('app', 'Email'),
+            'password' => Yii::t('app', 'Password'),
             'avatar' => Yii::t('app', 'Avatar'),
             'name' => Yii::t('app', 'Name'),
             'birthday' => Yii::t('app', 'Birthday'),

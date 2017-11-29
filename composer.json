@@ -22,7 +22,8 @@
         "2amigos/yii2-ckeditor-widget" : "*",
         "rmrevin/yii2-fontawesome": "~2.17",
         "kartik-v/yii2-widget-fileinput": "@dev",
-        "philippfrenzel/yii2fullcalendar": "*"
+        "philippfrenzel/yii2fullcalendar": "*",
+        "kartik-v/yii2-widget-select2": "@dev"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

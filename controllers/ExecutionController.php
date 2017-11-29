@@ -7,6 +7,7 @@ use Yii;
 use app\models\Execution;
 use app\models\ExecutionSearch;
 use yii\web\Controller;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -57,6 +58,75 @@ class ExecutionController extends Controller
         ]);
     }
 
+    public function actionAccept($execution_id)
+    {
+        if(Yii::$app->user->identity->role == 1){
+            $execution = Execution::findOne(['id' => $execution_id]);
+            $execution->status = true;
+            if($execution->save()){
+                $task = $execution->task;
+                $users = $task->users;
+                $userCount = count($users);
+                $executions = $task->executions;
+                $execCount = 0;
+                foreach($executions as $exec){
+                    if($exec->status){
+                        $execCount++;
+                    }
+                }
+                if($execCount == $userCount){
+                    $task->status = 15;
+                    if(!$task->save()){
+                        vd($task->errors);
+                    }
+                }
+                $str = '';
+                if($execution->task->to == 1){
+                    $str = '-copy';
+                }elseif ($execution->task->to == 2){
+                    $str = '-translator';
+                }elseif($execution->task->to == 3) {
+                    $str = '-developer';
+                }
+                return $this->redirect(['/task/view'.$str, 'id' => $execution->task_id]);
+            }else{
+                vd($execution->errors);
+            }
+        }else{
+            throw new HttpException(403);
+        }
+    }
+
+    public function actionReject($execution_id)
+    {
+        if(Yii::$app->user->identity->role == 1){
+            $execution = Execution::findOne(['id' => $execution_id]);
+            $execution->status = false;
+            if($execution->save()){
+                $task = $execution->task;
+                $task->status = 3;
+                if($task->save()){
+                    $str = '';
+                    if($execution->task->to == 1){
+                        $str = '-copy';
+                    }elseif ($execution->task->to == 2){
+                        $str = '-translator';
+                    }elseif($execution->task->to == 3) {
+                        $str = '-developer';
+                    }
+                    return $this->redirect(['/task/view'.$str, 'id' => $execution->task_id]);
+                }else{
+                    $task->errors;
+                }
+
+            }else{
+                vd($execution->errors);
+            }
+        }else{
+            throw new HttpException(403);
+        }
+    }
+
     /**
      * Creates a new Execution model.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -87,13 +157,16 @@ class ExecutionController extends Controller
                 }
 
                 return $this->redirect(['/task/view'.$str, 'id' => $model->task_id]);
+            }else{
+                vd($model->errors);
             }
 
+        }else{
+            return $this->render('create', [
+                'model' => $model,
+            ]);
         }
 
-        return $this->render('create', [
-            'model' => $model,
-        ]);
     }
 
     /**

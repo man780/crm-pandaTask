@@ -46,18 +46,19 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
+
         $role = Yii::$app->user->identity->role;
         $searchModel = new TaskSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         if($role == 1){
-            $tasks = Task::find()->all();
+            $tasks = Task::find()->orderBy('id DESC')->all();
         }else{
-            $id = Yii::$app->user->id;
-            $userModel = User::findOne($id);
+            $userModel = Yii::$app->user->identity;
             $tasks = $userModel->tasks;
-        }
 
+            
+        }
 
         return $this->render(
             'index',
@@ -69,41 +70,44 @@ class SiteController extends Controller
             ]);
     }
 
-    public function actionProfile()
+    public function actionSettings()
     {
-        $model = ($model = Profile::findOne(Yii::$app->user->id)) ? $model : new Profile();
+        $model = ($model = User::findOne(Yii::$app->user->id)) ? $model : new User();
         $old_avatar = $model->avatar;
         if($model->load(Yii::$app->request->post())):
             $post = Yii::$app->request->post();
 
-            $model->birthday = ($post['Profile']['birthday'] == '') ? null : strtotime($post['Profile']['birthday']);
-            $model->branch_id = ($post['Profile']['branch_id'] == '') ? null : $post['Profile']['branch_id'];
-            $model->skype = ($post['Profile']['skype'] == '') ? null : $post['Profile']['skype'];
-            $model->phone = ($post['Profile']['phone'] == '') ? null : $post['Profile']['phone'];
-            $model->telegramm = ($post['Profile']['telegramm'] == '') ? null : $post['Profile']['telegramm'];
+            $model->birthday = ($post['User']['birthday'] == '') ? null : strtotime($post['User']['birthday']);
+            $model->branch_id = ($post['User']['branch_id'] == '') ? null : $post['User']['branch_id'];
+            $model->skype = ($post['User']['skype'] == '') ? null : $post['User']['skype'];
+            $model->phone = ($post['User']['phone'] == '') ? null : $post['User']['phone'];
+            $model->telegramm = ($post['User']['telegramm'] == '') ? null : $post['User']['telegramm'];
             if($model->validate()){
-                $avatar = $_FILES['Profile'];
+                $avatar = $_FILES['User'];
                 if(is_file($avatar['tmp_name']['avatar']) && (
                         exif_imagetype($avatar['tmp_name']['avatar']) == IMAGETYPE_GIF ||
                         exif_imagetype($avatar['tmp_name']['avatar']) == IMAGETYPE_JPEG ||
                         exif_imagetype($avatar['tmp_name']['avatar']) == IMAGETYPE_PNG
                     )):
-                    $image = '/images/profiles/'.Yii::$app->user->identity->username.'/'.$avatar['name']['avatar'];
-                    if(!is_dir(Yii::$app->basePath.'\web\images\profiles'.DIRECTORY_SEPARATOR.Yii::$app->user->identity->username))
-                    mkdir(Yii::$app->basePath.'\web\images\profiles'.DIRECTORY_SEPARATOR.Yii::$app->user->identity->username);
+                    $image = '/images/user/'.Yii::$app->user->identity->username.'/'.$avatar['name']['avatar'];
+
+                    $this->removeDirectory(Yii::$app->basePath.'/web/images/user'.DIRECTORY_SEPARATOR.Yii::$app->user->identity->username);
+                    if(!is_dir(Yii::$app->basePath.'/web\images/user'.DIRECTORY_SEPARATOR.Yii::$app->user->identity->username))
+                        mkdir(Yii::$app->basePath.'/web/images/user'.DIRECTORY_SEPARATOR.Yii::$app->user->identity->username);
+                    //vd($image);
                     if (!move_uploaded_file($avatar['tmp_name']['avatar'],
-                        Yii::$app->basePath.'\web\images\profiles'.DIRECTORY_SEPARATOR.Yii::$app->user->identity->username.DIRECTORY_SEPARATOR.$avatar['name']['avatar']))
-                        Yii::$app->session->setFlash('success', '���� �� �������');
+                        Yii::$app->basePath.'/web/images/user'.DIRECTORY_SEPARATOR.Yii::$app->user->identity->username.DIRECTORY_SEPARATOR.$avatar['name']['avatar']))
+                        Yii::$app->session->setFlash('success', 'Файл не сохранён');
                     $model->avatar = $image;
                 else:
                     $model->avatar = $old_avatar;
                 endif;
                 //print_r($model->attributes); die;
-                if($model->updateProfile()):
-                    Yii::$app->session->setFlash('success', '������� �������');
+                if($model->updateUser()):
+                    Yii::$app->session->setFlash('success', 'Профиль изменен');
                 else:
-                    Yii::$app->session->setFlash('error', '������� �� �������');
-                    Yii::error('������ ������. ������� �� �������');
+                    Yii::$app->session->setFlash('error', 'Профиль не изменен');
+                    Yii::error('Ошибка записи. Профиль не изменен');
                     return $this->refresh();
                 endif;
             }
@@ -118,6 +122,15 @@ class SiteController extends Controller
                 'model' => $model
             ]
         );
+    }
+
+    private function removeDirectory($dir) {
+        if ($objs = glob($dir."/*")) {
+            foreach($objs as $obj) {
+                is_dir($obj) ? removeDirectory($obj) : unlink($obj);
+            }
+        }
+        rmdir($dir);
     }
 
     public function actionReg()
@@ -141,13 +154,13 @@ class SiteController extends Controller
                     exif_imagetype($avatar['tmp_name']['avatar']) == IMAGETYPE_PNG
                 )) {
                 $image = '/images/user/' . $model->username . '/' . $avatar['name']['avatar'];
-                if (!is_dir(Yii::$app->basePath . '\web\images\user' . DIRECTORY_SEPARATOR . $model->username))
-                    mkdir(Yii::$app->basePath . '\web\images\user' . DIRECTORY_SEPARATOR . $model->username);
+                if (!is_dir(Yii::$app->basePath . '/web/images/user' . DIRECTORY_SEPARATOR . $model->username))
+                    mkdir(Yii::$app->basePath . '/web/images/user' . DIRECTORY_SEPARATOR . $model->username);
                 if (!move_uploaded_file($avatar['tmp_name']['avatar'],
-                    Yii::$app->basePath . '\web\images\user' . DIRECTORY_SEPARATOR . $model->username . DIRECTORY_SEPARATOR . $avatar['name']['avatar'])
+                    Yii::$app->basePath . '/web/images/user' . DIRECTORY_SEPARATOR . $model->username . DIRECTORY_SEPARATOR . $avatar['name']['avatar'])
                 )
                     Yii::$app->session->setFlash('success', 'Файл не сохранён');
-                    $model->avatar = $image;
+                $model->avatar = $image;
             }
             if ($user = $model->reg()):
                 if ($user->status === User::STATUS_ACTIVE):
@@ -253,7 +266,7 @@ class SiteController extends Controller
 
     public function actionSendEmail()
     {
-		$this->layout = 'auth';
+        $this->layout = 'auth';
         $model = new SendEmailForm();
 
         if ($model->load(Yii::$app->request->post())) {
@@ -274,6 +287,7 @@ class SiteController extends Controller
 
     public function actionResetPassword($key)
     {
+        $this->layout = 'auth';
         try {
             $model = new ResetPasswordForm($key);
         }

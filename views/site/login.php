@@ -17,7 +17,7 @@ use yii\widgets\ActiveForm;
             <!--<input type="text"><span class="highlight"></span><span class="bar"></span>-->
             <!--<label>E-mail</label>-->
             <?= $form->field($model, 'email', ['template' => '{input}<span class="highlight"></span><span class="bar"></span>
-        {label}<div class="help-block">{hint}</div>'])->textInput()?>
+        {label}<div class="help-block">{hint}</div>'])->textInput(['autocomplete' => 'off'])?>
         </div>
     <?php else: ?>
         <?= $form->field($model, 'username', ['template' => '{input}<span class="highlight"></span><span class="bar"></span>
@@ -34,12 +34,13 @@ use yii\widgets\ActiveForm;
 	<?//= $form->errorSummary($model, ['header' => '', 'class' => 'has-error'])?>
     
 	<div class="group">
-		<?= $form->field($model, 'rememberMe')->checkbox() ?>
+		<?= $form->field($model, 'rememberMe', ['template' => '{input}<span class="highlight"></span><span class="bar"></span>
+        {label}<div class="help-block">{hint}</div>'])->checkbox() ?>
 	</div>
 	<br>
 	<br>
 	<br>
-		<?= Html::a('Забыли пароль?', ['/site/send-email']) ?>
+		<?= Html::a('Забыли пароль?', ['/site/send-email'], ['class' => 'btn-link']) ?>
     <br>
     <br>
 

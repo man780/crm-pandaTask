@@ -11,11 +11,12 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
+    <div class="group">
         <?= $form->field($model, 'email', ['template' => '{input}<span class="highlight"></span><span class="bar"></span>
         {label}<div class="help-block">{hint}</div>']) ?>
-    
+    </div>
         <div class="form-group">
-            <?= Html::submitButton('Отправить', ['class' => 'btn btn-primary']) ?>
+            <?= Html::submitButton('Отправить', ['class' => 'btn-submit']) ?>
         </div>
     <?php ActiveForm::end(); ?>
 
